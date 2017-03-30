@@ -1,6 +1,5 @@
 import json
-from genieorm.models import Model, dict_value
-from genieorm.models import Field, ListField, EmbedField
+from genieorm import Model, dict_value, Field, ListField, EmbedField
 
 
 class Wan(Model):
@@ -36,7 +35,6 @@ class Hgw(Model):
     wan = EmbedField('InternetGatewayDevice.WANDevice.3.WANConnectionDevice.1.WANIPConnection.3', Wan)
     hosts = ListField('InternetGatewayDevice.LANDevice.1.Hosts.Host', Host)
     wlans = ListField('InternetGatewayDevice.LANDevice.1.WLANConfiguration', WlanConfig)
-
 
 
 with open("hg.json") as f:
