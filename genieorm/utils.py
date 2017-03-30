@@ -7,4 +7,8 @@ def dict_from_path(dct, path):
 def join_path(a, b):
     if not a:
         return b
-    return "{0}.{1}".format(a,b)
+    return "{0}.{1}".format(a, b)
+
+
+def dict_value(dct):
+    return dct['_value']

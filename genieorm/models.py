@@ -31,7 +31,7 @@ class Field(object):
 
 class EmbedField(Field):
     def __set__(self, instance, value):
-        self.fullpath = join_path(instance._fullpath, self.key)
+        self.fullpath = join_path(instance._fullpath, self.path)
         v = dict_from_path(value, self.key)
         instance.__dict__[self.field_name] = self.proxy_class(v, fullpath=self.fullpath)
 
@@ -39,7 +39,7 @@ class EmbedField(Field):
 class ListField(Field):
 
     def __set__(self, instance, value):
-        self.fullpath = join_path(instance._fullpath, self.key)
+        self.fullpath = join_path(instance._fullpath, self.path)
         inner_dct = dict_from_path(value, self.path)
         result = [
             self.proxy_class(inner_dct[k], fullpath=join_path(self.fullpath, k))
@@ -57,6 +57,7 @@ class FieldMeta(type):
 
 
 class Model(object):
+
     __metaclass__ = FieldMeta
 
     def __init__(self, dct, fullpath=""):
@@ -64,17 +65,23 @@ class Model(object):
         for k, v in type(self).__dict__.iteritems():
             if isinstance(v, Field):
                 setattr(self, k, dct)
-        del self._fullpath
+
+    @classmethod
+    def get_path(klass, path):
+        key = ""
+        for p in path.split('.'):
+            key = join_path(key, getattr(klass, p).path)
+            klass = getattr(klass, p)
+        return key
 
     def to_dict(self):
-        return self.__dict__
+        return {
+            k: v for k, v in self.__dict__.items()
+            if not k.startswith("_")
+        }
 
     def to_json(self):
         return json.dumps(self, cls=GenieEncoder)
-
-
-def dict_value(dct):
-    return dct['_value']
 
 
 class GenieEncoder(json.JSONEncoder):
