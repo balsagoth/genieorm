@@ -1,4 +1,5 @@
 import json
+import datetime
 
 from genieorm.utils import dict_from_path, join_path
 
@@ -88,5 +89,7 @@ class GenieEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, Model):
             return obj.to_dict()
+        if isinstance(obj, datetime.datetime):
+            return obj.isoformat()
         else:
             return json.JSONEncoder.default(self, obj)
