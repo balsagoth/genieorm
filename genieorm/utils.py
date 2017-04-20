@@ -1,6 +1,9 @@
 def dict_from_path(dct, path):
     for p in path.split('.'):
-        dct = dct[p]
+        try:
+            dct = dct[p]
+        except KeyError:
+            return {}
     return dct
 
 
