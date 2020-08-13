@@ -14,4 +14,4 @@ def join_path(a, b):
 
 
 def dict_value(dct):
-    return dct['_value']
+    return dct.get('_value')
